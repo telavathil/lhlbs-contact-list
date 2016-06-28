@@ -29,7 +29,7 @@ class Contact
       # todo: Return an Array of Contact instances made from the data in 'contacts.csv'.
       contacts=[]
       contact_list = CSV.read('/home/tobin/Projects/lighthouse/contact-list/contacts1.csv')
-      contact_list.each {|contact| contacts << Contact.new({first_name: contacts[1],last_name: contacts[2], phone1:contacts[3], phone2:contacts[4] , email:contacts[5]})}
+      contact_list.each {|contact| contacts << Contact.new({first_name: contact[1],last_name: contact[2], phone1:contact[3], phone2:contact[4] , email:contact[5]})}
       contacts
     end
 
@@ -49,14 +49,12 @@ class Contact
     def find(id)
       # todo: Find the Contact in the 'contacts.csv' file with the matching id.
       contact_list = CSV.read('/home/tobin/Projects/lighthouse/contact-list/contacts1.csv')
-      #binding.pry
       contact_list.each {|contact|
         if contact[0] == id
-          return Contact.new({first_name: contact[1],last_name: contact[2], phone1:contact[3], phone2:contact[4] , email:contact[5]})
-        else
-          nil
+          return Contact.new({first_name: contact[1],last_name: contact[2], phone1:contact[3], phone2:contact[4] ,email:contact[5]})
         end
       }
+      return nil
     end
 
     # Search for contacts by either name or email.
@@ -68,7 +66,7 @@ class Contact
       contact_list = CSV.read('/home/tobin/Projects/lighthouse/contact-list/contacts1.csv')
       #test if term is in first_name, last_name, or email
       contact_list.each {|contact|
-        if [contact[1], contact[2],contact[5]].inject(false){|match,word| match || word.match(term) }
+        if [contact[1].to_s, contact[2].to_s,contact[5].to_s].inject(false){|match,word| match || word.match(term) }
           found_contacts << Contact.new({first_name: contact[1],last_name: contact[2], phone1:contact[3], phone2:contact[4] , email:contact[5]})
         end
       }
