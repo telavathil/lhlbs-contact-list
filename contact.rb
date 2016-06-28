@@ -28,7 +28,7 @@ class Contact
     def all
       # todo: Return an Array of Contact instances made from the data in 'contacts.csv'.
       contacts=[]
-      contact_list = CSV.read('/home/tobin/Projects/lighthouse/contact-list/contacts1.csv')
+      contact_list = CSV.read('./contacts1.csv')
       contact_list.each {|contact| contacts << Contact.new({first_name: contact[1],last_name: contact[2], phone1:contact[3], phone2:contact[4] , email:contact[5]})}
       contacts
     end
@@ -40,7 +40,7 @@ class Contact
       # todo: Instantiate a Contact, add its data to the 'contacts.csv' file, and return it.
       contact = Contact.new(params)
       contact_row = [contact.id,contact.first_name,contact.last_name,contact.phone1,contact.phone2,contact.email]
-      CSV.open('/home/tobin/Projects/lighthouse/contact-list/contacts1.csv', 'a') {|csv| csv << contact_row}
+      CSV.open('./contacts1.csv', 'a') {|csv| csv << contact_row}
     end
 
     # Find the Contact in the 'contacts.csv' file with the matching id.
@@ -48,7 +48,7 @@ class Contact
     # return [Contact, nil] the contact with the specified id. If no contact has the id, returns nil.
     def find(id)
       # todo: Find the Contact in the 'contacts.csv' file with the matching id.
-      contact_list = CSV.read('/home/tobin/Projects/lighthouse/contact-list/contacts1.csv')
+      contact_list = CSV.read('./contacts1.csv')
       contact_list.each {|contact|
         if contact[0] == id
           return Contact.new({first_name: contact[1],last_name: contact[2], phone1:contact[3], phone2:contact[4] ,email:contact[5]})
@@ -63,7 +63,7 @@ class Contact
     def search(term)
       # todo: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
       found_contacts = []
-      contact_list = CSV.read('/home/tobin/Projects/lighthouse/contact-list/contacts1.csv')
+      contact_list = CSV.read('./contacts1.csv')
       #test if term is in first_name, last_name, or email
       contact_list.each {|contact|
         if [contact[1].to_s, contact[2].to_s,contact[5].to_s].inject(false){|match,word| match || word.match(term) }
