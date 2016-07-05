@@ -4,19 +4,19 @@ require 'pry'
 # Interfaces between a user and their contact list. Reads from and writes to standard I/O.
 class ContactList
     # TODO: Implement user interaction. This should be the only file where you use `puts` and `gets`.
-    attr_accessor :command
+    attr_reader :command, :arg1
 
-    def initialize(command)
+    def initialize(command, arg1)
         @command = command
+        @arg1 = arg1
         # params.each {|key,value| instance_variable_set("@#{key}",value)}
     end
 
     def execution_option
-        # binding.pry
         main_menu if @command.nil?
 
         case @command
-        when 'new'
+        when 'new','update'
             input = {}
             puts 'Please provide a first name, last name, primary and secondary phone numbers and an email address for this contact.'
             print 'First Name: '
@@ -31,43 +31,51 @@ class ContactList
             input[:email] = STDIN.gets.chomp
 
             begin
-               #binding.pry
-               Contact.create(input)
-            rescue
-               puts 'An error has occured please try again'
-            end
+               if @command == 'new'
+                 input[:id] = 0
+                 Contact.create(input)
+               elsif @command == 'update'
+                 input[:id] = @arg1
+                 Contact.update(input)
+               end
+            # rescue
+            #    puts 'An error has occured please try again'
+            #end
+           end
         # print 'This email is has already been used. Please provide another email.'
 
         when 'list'
             list = Contact.all
-            binding.pry
             list.each_with_index {|contact,index|
               puts "#{index}: #{list[index].first_name} #{list[index].last_name} (#{list[index].email})"
             }
             puts "#{list.length} records total"
 
-        when 'show'
-          puts 'Please provide the uid for this contact. The uids for the contacts are 8 letters, all caps. eg. PFFJNLSM '
-          print 'UID: '
+        when 'show', 'delete'
+          puts 'Please provide the id for this contact. Ids are integers'
+          print 'ID: '
           uid = STDIN.gets.chomp
           contact = Contact.find(uid)
-          binding.pry
+          #binding.pry
           if contact.nil?
             puts "There is no record with #{uid} as as an id."
-          else
+          elsif @command == 'show'
             puts "Here are the contacts details"
             puts "First Name: #{contact.first_name}"
             puts "Last Name: #{contact.last_name}"
             puts "Primary Phone Number: #{contact.phone1}"
             puts "Secondary Phone Number: #{contact.phone2}"
             puts "Email address: #{contact.email}"
+          elsif @command == 'delete'
+            puts "The contact at #{uid} will be deleted..."
+            Contact.destroy(contact)
           end
         when 'search'
           puts 'Please provide the search term you would like search for. '
           print 'Search for: '
           term = STDIN.gets.chomp
           list = Contact.search(term)
-          binding.pry
+          #binding.pry
           if list.empty?
             puts "No contact matched that search term"
           else
@@ -77,7 +85,7 @@ class ContactList
             }
           end
         else
-          puts "That is not a valid command"
+          puts "That is not a valid command" unless @command.nil?
         end
     end
 
@@ -87,8 +95,10 @@ class ContactList
         puts 'list   - List all contacts'
         puts 'show   - Show a contact'
         puts 'search - Search contacts'
+        puts 'update  - Update a contact with a given id'
+        puts 'delete  - Delete a contact with a given id'
     end
 end
 
-contacts = ContactList.new(ARGV[0])
+contacts = ContactList.new(ARGV[0], ARGV[1])
 contacts.execution_option
