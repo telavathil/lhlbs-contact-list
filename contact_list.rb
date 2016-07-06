@@ -45,11 +45,26 @@ class ContactList
         # print 'This email is has already been used. Please provide another email.'
 
         when 'list'
-            list = Contact.all
+          continue = true
+          offset = 0
+          while continue
+            list_and_total = Contact.all(offset)
+            total_rows = list_and_total[1]
+            list = list_and_total[0]
             list.each_with_index {|contact,index|
               puts "#{index}: #{list[index].first_name} #{list[index].last_name} (#{list[index].email})"
             }
-            puts "#{list.length} records total"
+            puts "Viewing records #{offset} to #{offset + 10} of #{total_rows} total records"
+            #pagination
+            puts "Do you wish to see another page? y/n"
+            print "y/n: "
+            choice = STDIN.gets.chomp
+            if choice == 'n'
+              continue = false
+            else
+              offset += 10
+            end
+          end
 
         when 'show', 'delete'
           puts 'Please provide the id for this contact. Ids are integers'

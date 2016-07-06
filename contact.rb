@@ -36,19 +36,20 @@ class Contact
 
     # Opens 'contacts.csv' and creates a Contact object for each line in the file (aka each contact).
     # return [Array<Contact>] Array of Contact objects
-    def all
+    def all(offset)
       # todo: Return an Array of Contact instances made from the data in 'contacts.csv'.
       contacts=[]
       contact_list_hash = []
       connection
       puts 'Finding Contacts...'
-      results = @@conn.exec('select * from contacts;').each { |contact|
+      total_rows = @@conn.exec('select count(id) from contacts;')[0]['count'].to_i 
+      results = @@conn.exec("select * from contacts limit 10 offset #{offset};").each { |contact|
           contact_list_hash << contact
         }
 
       @@conn.close
       contact_list_hash.each {|contact| contacts << Contact.new({id:contact['id'],first_name: contact['first_name'],last_name: contact['last_name'], phone1:contact['phone1'], phone2:contact['phone2'] , email:contact['email']})}
-      contacts
+      [contacts,total_rows]
     end
 
     # Creates a new contact, adding it to the csv file, returning the new contact.
