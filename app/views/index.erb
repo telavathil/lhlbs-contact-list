@@ -1,10 +1,12 @@
 <script id="contact-table-template" type="text/x-handlebars-template">
-  <tr>
+  <tr class="contact" data-id="{{id}}">
     <td class="firstname">{{firstname}}</td>
     <td class="lastname">{{lastname}}</td>
-    <td class="phone1">{{phone}}</td>
+    <td class="phone1">{{phone1}}</td>
     <td class="email">{{email}}</td>
-    <td><td>
+    <td style="width:10%"><a id="show-contact" class="waves-effect waves-light btn">Show</a><td>
+    <td style="width:10%"><a id="edit-contact" class="waves-effect waves-light btn">Edit</a><td>
+    <td style="width:10%"><a id="delete-contact" class="waves-effect waves-light btn">Delete</a><td>
   </tr>
 </script>
 
@@ -13,34 +15,34 @@
       <form name="new-contact" class="new_contact col s12">
         <div class="row">
           <div class="input-field col s6">
-            <input id="firstname" type="text" >
-            <label for="firstname">First Name</label>
+            <input name="firstname" type="text" value="{{firstname}}">
+            <!-- <label for="firstname">First Name</label> -->
           </div>
           <div class="input-field col s6">
-            <input id="lastname" type="text" >
-            <label for="lastname">Last Name</label>
+            <input name="lastname" type="text" value="{{lastname}}">
+            <!-- <label for="lastname">Last Name</label> -->
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
-            <input id="email" type="email" >
-            <label for="email">Email</label>
+            <input  name="email" type="email" value="{{email}}">
+            <!-- <label for="email">Email</label> -->
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
-            <input id="phone1" type="text" >
+            <input name ="phone1" type="text" value="{{phone1}}">
             <label for="phone1">Primary Phone</label>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
-            <input id="phone2" type="text" >
+            <input name="phone2" type="text" value="{{phone2}}">
             <label for="phone2">Secondary Phone</label>
           </div>
         </div>
         <div class="row">
-          <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+          <button class="btn waves-effect waves-light contact-submit" type="submit" name="action">Submit
           </button>
         </div>
       </form>

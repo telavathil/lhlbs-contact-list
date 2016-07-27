@@ -8,6 +8,25 @@ get '/contacts' do
   json @contactsJson
 end
 
-get '/contacts/:id' do
+post '/contact/new' do
+
+  contact = Contact.new.from_json(params.to_json)
+
+  contact.save
+  @contactsJson = Contact.last.as_json
+  json @contactsJson
+end
+
+get '/contact/:id' do
   #json for one contact
+  @contactJson = Contact.find(params[:id]).as_json
+  json @contactJson
+end
+
+put '/contact/delete/:id' do
+
+end
+
+put '/contact/edit/:id' do
+
 end
