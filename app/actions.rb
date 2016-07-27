@@ -23,10 +23,19 @@ get '/contact/:id' do
   json @contactJson
 end
 
-put '/contact/delete/:id' do
+post '/contact/delete/:id' do
+  contact = Contact.find(params[:id])
+  contact.destroy
 
+  @contactsJson = Contact.all.as_json
+  json @contactsJson
 end
 
-put '/contact/edit/:id' do
+post '/contact/edit/:id' do
+  contact = Contact.find(params[:id])
+  data = params.slice('firstname','lastname','email','phone1','phone2')
+  contact.update(data)
 
+  @contactJson = Contact.find(params[:id]).as_json
+  json @contactJson
 end

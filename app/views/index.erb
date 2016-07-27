@@ -12,9 +12,10 @@
 
 <script id="form-template" type="text/x-handlebars-template">
     <div class="row form-container">
-      <form name="new-contact" class="new_contact col s12">
+      <form name="new-contact" class="new_contact col s12" >
         <div class="row">
           <div class="input-field col s6">
+            <input type="hidden" name='id' value="{{id}}">
             <input name="firstname" type="text" value="{{firstname}}">
             <!-- <label for="firstname">First Name</label> -->
           </div>

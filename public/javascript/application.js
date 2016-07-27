@@ -38,7 +38,7 @@ $(document).ready(function() {
     getContact(id,'edit');
   });
 
-  //post the contcat data via json on the submit of the new form
+  //post the update from the form
   $(document).on('submit','form.edit_contact',function(e){
     e.preventDefault();
     var data = $(this).serializeArray();
@@ -49,6 +49,13 @@ $(document).ready(function() {
   $(document).on('click','#delete-contact',function(){
     var id = $(this).closest('tr').data('id');
     getContact(id,'delete');
+  });
+
+  //post the delete from the form
+  $(document).on('submit','form.delete_contact',function(e){
+    e.preventDefault();
+    var data = $(this).serializeArray();
+    deleteContact(data);
   });
 
   // ----------------------------
@@ -72,22 +79,47 @@ $(document).ready(function() {
         json[item.name]=item.value;
       });
       $.post('/contact/new',json,function(data){
-        wipeContactsTable();
-        getContacts();
-        showForm();
+        $.when(showForm()).done(function(){
+          $.when(wipeContactsTable()).done(function(){
+            $.when().done(function(){
+              getContacts();
+            });
+          });
+        });
       },'json');
   }
 
-  //post form data
+  //post form data to update contact
   function editContact(data){
       json = {};
       data.forEach(function(item){
         json[item.name]=item.value;
       });
-      $.put('/contact/new',json,function(data){
-        wipeContactsTable();
-        getContacts();
-        showForm();
+      $.post('/contact/edit/'+data[0].value,json,function(data){
+        $.when(showForm()).done(function(){
+          $.when(wipeContactsTable()).done(function(){
+            $.when().done(function(){
+              getContacts();
+            });
+          });
+        });
+      },'json');
+  }
+
+  //post form data to update contact
+  function deleteContact(data){
+      json = {};
+      data.forEach(function(item){
+        json[item.name]=item.value;
+      });
+      $.post('/contact/delete/'+data[0].value,json,function(data){
+        $.when(showForm()).done(function(){
+          $.when(wipeContactsTable()).done(function(){
+            $.when().done(function(){
+              getContacts();
+            });
+          });
+        });
       },'json');
   }
 
@@ -114,7 +146,9 @@ $(document).ready(function() {
               break;
             case 'delete':
               $.when(showForm(data)).done(function(){
-                $('.contact-submit').remove();
+                $('form.new_contact').removeClass('new_contact');
+                $('form').addClass('delete_contact');
+                $('.contact-submit').text('Delete');
               });
               break;
             default:
@@ -129,10 +163,12 @@ $(document).ready(function() {
 
   //clean the contacts table
   function wipeContactsTable(){
-    var childrenCount = $('.contacts-list').children().length;
-    for(var i=0;i<childrenCount;i++){
-      $('.contacts-list').children()[i].remove();
-    }
+    $('.contacts-list').empty();
+    // var childrenCount = $('.contacts-list').children().length;
+    // for(var i=0;i<childrenCount;i++){
+    //   debugger;
+    //   $('.contacts-list').children()[i].remove();
+    // }
   }
 
   //write contact to form inputs
